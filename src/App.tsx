@@ -95,19 +95,31 @@ function App() {
   };
 
   const handleResetRanking = async () => {
-    const password = window.prompt('ランキングをリセットするにはパスワードを入力してください');
-    if (password === '12345') {
+    const password = window.prompt('ランキングをリセットするにはパスワードを入力してください(生年月日)');
+    if (password === '19820427') {
       if (window.confirm('ランキングをリセットしますか？')) {
         try {
-          const { error } = await supabase
+          // 全てのレコードを削除
+          const { error: deleteError } = await supabase
             .from('ranking')
             .delete()
-            .neq('id', 0); // 全てのレコードを削除
+            .neq('id', 0);
 
-          if (error) throw error;
+          if (deleteError) throw deleteError;
+
+          // IDシーケンスをリセット
+          const { error: resetError } = await supabase
+            .rpc('reset_ranking_id_sequence');
+
+          if (resetError) {
+            console.error('シーケンスリセットエラー:', resetError);
+            alert('ランキングIDのリセットに失敗しました');
+          }
+
           setRanking([]);
         } catch (error) {
-          console.error('Error resetting ranking:', error);
+          console.error('ランキングリセットエラー:', error);
+          alert('ランキングのリセット中にエラーが発生しました');
         }
       }
     } else if (password !== null) {
