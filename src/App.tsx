@@ -29,17 +29,35 @@ function App() {
 
   const handleGameOver = (streak: number) => {
     setCurrentStreak(streak);
-    setShowNameInput(true);
+    // ランキングに入る可能性があるかチェック
+    const wouldRankIn = ranking.length < 10 || streak > ranking[ranking.length - 1].score;
+    if (wouldRankIn) {
+      setShowNameInput(true);
+    } else {
+      setGameStarted(false);
+    }
   };
 
   const handleSaveName = (name: string) => {
     const newRanking = [...ranking, { name, score: currentStreak }]
       .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+      .slice(0, 100);
     setRanking(newRanking);
     localStorage.setItem('jankenRanking', JSON.stringify(newRanking));
     setShowNameInput(false);
     setGameStarted(false);
+  };
+
+  const handleResetRanking = () => {
+    const password = window.prompt('ランキングをリセットするにはパスワードを入力してください');
+    if (password === '12345') {
+      if (window.confirm('ランキングをリセットしますか？')) {
+        setRanking([]);
+        localStorage.removeItem('jankenRanking');
+      }
+    } else if (password !== null) {
+      alert('パスワードが間違っています');
+    }
   };
 
   return (
@@ -48,6 +66,7 @@ function App() {
         <StartPage 
           onStart={handleStart} 
           ranking={ranking}
+          onReset={handleResetRanking}
         />
       ) : (
         <GameScreen onGameOver={handleGameOver} />
