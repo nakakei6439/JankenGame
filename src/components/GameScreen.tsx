@@ -14,7 +14,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
   const [computerChoice, setComputerChoice] = useState<Hand | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [streak, setStreak] = useState(0);
-  const [handCounts, setHandCounts] = useState({ 'グー': 0, 'チョキ': 0, 'パー': 0 });
+  const [handCounts, setHandCounts] = useState({ 'グー': 1, 'チョキ': 1, 'パー': 1 });
 
   useEffect(() => {
     const timer = setTimeout(() => {
