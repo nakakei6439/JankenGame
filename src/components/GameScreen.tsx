@@ -106,14 +106,17 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
         </div>
       )}
       <div className="hand-stats">
-        <div className="hand-stat">
-          <span>✊: {getHandPercentage('グー')}%</span>
-        </div>
-        <div className="hand-stat">
-          <span>✌️: {getHandPercentage('チョキ')}%</span>
-        </div>
-        <div className="hand-stat">
-          <span>🖐️: {getHandPercentage('パー')}%</span>
+        <div className="hand-stats-label">コンピュータの予想</div>
+        <div className="hand-stats-items">
+          <div className="hand-stat">
+            <span>✊: {getHandPercentage('グー')}%</span>
+          </div>
+          <div className="hand-stat">
+            <span>✌️: {getHandPercentage('チョキ')}%</span>
+          </div>
+          <div className="hand-stat">
+            <span>🖐️: {getHandPercentage('パー')}%</span>
+          </div>
         </div>
       </div>
     </div>
