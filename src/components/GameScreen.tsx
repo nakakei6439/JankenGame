@@ -14,6 +14,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
   const [computerChoice, setComputerChoice] = useState<Hand | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [streak, setStreak] = useState(0);
+  const [handCounts, setHandCounts] = useState({ 'グー': 0, 'チョキ': 0, 'パー': 0 });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,6 +38,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
     }
   };
 
+  const getHandPercentage = (hand: Hand): number => {
+    const total = handCounts['グー'] + handCounts['チョキ'] + handCounts['パー'];
+    if (total === 0) return 0;
+    return Math.round((handCounts[hand] / total) * 100);
+  };
+
   const determineWinner = (player: Hand, computer: Hand): Result => {
     if (player === computer) return 'あいこ';
     if (
@@ -55,11 +62,14 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
     
     setComputerChoice(computerHand);
     setResult(gameResult);
+    setHandCounts(prev => ({
+      ...prev,
+      [computerHand]: prev[computerHand] + 1
+    }));
     
     if (gameResult === '勝ち') {
       setStreak(prev => prev + 1);
       setMessage(`コンピューター: ${getHandEmoji(computerHand)}\nあなたの勝ち！`);
-      // 次のじゃんけんの準備
       setShowButtons(false);
       setTimeout(() => {
         setMessage('じゃんけん...');
@@ -68,7 +78,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
     } else if (gameResult === '負け') {
       setMessage(`コンピューター: ${getHandEmoji(computerHand)}\nあなたの負け...`);
       setShowButtons(false);
-      // スタート画面に戻る
       setTimeout(() => {
         onGameOver(streak);
       }, 2000);
@@ -96,6 +105,17 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
           <button onClick={() => handleChoice('パー')}>🖐️</button>
         </div>
       )}
+      <div className="hand-stats">
+        <div className="hand-stat">
+          <span>✊: {getHandPercentage('グー')}%</span>
+        </div>
+        <div className="hand-stat">
+          <span>✌️: {getHandPercentage('チョキ')}%</span>
+        </div>
+        <div className="hand-stat">
+          <span>🖐️: {getHandPercentage('パー')}%</span>
+        </div>
+      </div>
     </div>
   );
 };

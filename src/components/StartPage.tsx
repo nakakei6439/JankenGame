@@ -9,9 +9,10 @@ interface RankingItem {
 interface StartPageProps {
   onStart: () => void;
   ranking: RankingItem[];
+  onReset: () => void;
 }
 
-const StartPage: React.FC<StartPageProps> = ({ onStart, ranking }) => {
+const StartPage: React.FC<StartPageProps> = ({ onStart, ranking, onReset }) => {
   // 同じスコアの場合は同じ順位を計算
   const getRank = (index: number): number => {
     if (index === 0) return 1;
@@ -23,6 +24,9 @@ const StartPage: React.FC<StartPageProps> = ({ onStart, ranking }) => {
 
   return (
     <div className="start-page">
+      <button className="reset-button" onClick={onReset}>
+        ランキングリセット
+      </button>
       <h1>じゃんけん連勝チャレンジ</h1>
       <p>コンピューターに何回連続で勝てるか挑戦しよう！</p>
       <button className="start-button" onClick={onStart}>
