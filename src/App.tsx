@@ -24,16 +24,30 @@ function App() {
 
   const fetchRanking = async () => {
     try {
+      console.log('ランキング取得開始');
+      
       const { data, error } = await supabase
         .from('ranking')
         .select('*')
         .order('score', { ascending: false })
         .limit(100);
 
-      if (error) throw error;
-      if (data) setRanking(data);
+      if (error) {
+        console.error('ランキング取得エラー:', error);
+        alert(`ランキングの取得に失敗しました: ${error.message}`);
+        return;
+      }
+
+      if (!data) {
+        console.error('データが取得できませんでした');
+        return;
+      }
+
+      console.log('取得したランキングデータ:', data);
+      setRanking(data);
     } catch (error) {
-      console.error('Error fetching ranking:', error);
+      console.error('ランキング取得エラー:', error);
+      alert('ランキングの取得中にエラーが発生しました');
     }
   };
 
@@ -53,17 +67,27 @@ function App() {
 
   const handleSaveName = async (name: string) => {
     try {
+      console.log('ランキング保存開始:', { name, score: currentStreak });
+      
       const { data, error } = await supabase
         .from('ranking')
         .insert([{ name, score: currentStreak }])
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('ランキング保存エラー:', error);
+        alert(`ランキングの保存に失敗しました: ${error.message}`);
+        throw error;
+      }
+
+      console.log('保存されたデータ:', data);
+      
       if (data) {
         await fetchRanking();
       }
     } catch (error) {
-      console.error('Error saving score:', error);
+      console.error('ランキング保存エラー:', error);
+      alert('ランキングの保存中にエラーが発生しました');
     }
 
     setShowNameInput(false);
@@ -104,6 +128,24 @@ function App() {
       )}
       {showNameInput && (
         <NameInputModal streak={currentStreak} onSave={handleSaveName} />
+      )}
+      {ranking.length > 0 && (
+        <div className="mt-4">
+          <h2 className="text-xl font-bold mb-2">ランキング</h2>
+          <div className="bg-white rounded-lg shadow p-4">
+            <div className="space-y-2">
+              {ranking.map((item, index) => (
+                <div key={item.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-bold">{index + 1}位</span>
+                    <span>{item.name}</span>
+                  </div>
+                  <span className="font-bold">{item.score}連勝</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
