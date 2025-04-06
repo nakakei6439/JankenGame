@@ -29,6 +29,14 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
     return hands[Math.floor(Math.random() * hands.length)];
   };
 
+  const getHandEmoji = (hand: Hand): string => {
+    switch (hand) {
+      case 'グー': return '✊';
+      case 'チョキ': return '✌️';
+      case 'パー': return '🖐️';
+    }
+  };
+
   const determineWinner = (player: Hand, computer: Hand): Result => {
     if (player === computer) return 'あいこ';
     if (
@@ -50,7 +58,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
     
     if (gameResult === '勝ち') {
       setStreak(prev => prev + 1);
-      setMessage(`コンピューター: ${computerHand}\nあなたの勝ち！`);
+      setMessage(`コンピューター: ${getHandEmoji(computerHand)}\nあなたの勝ち！`);
       // 次のじゃんけんの準備
       setShowButtons(false);
       setTimeout(() => {
@@ -58,17 +66,19 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
         setShowButtons(true);
       }, 2000);
     } else if (gameResult === '負け') {
-      setMessage(`コンピューター: ${computerHand}\nあなたの負け...`);
+      setMessage(`コンピューター: ${getHandEmoji(computerHand)}\nあなたの負け...`);
       setShowButtons(false);
       // スタート画面に戻る
       setTimeout(() => {
         onGameOver(streak);
       }, 2000);
     } else {
-
+      setMessage(`コンピューター: ${getHandEmoji(computerHand)}\nあいこで...しょ！！`);
+      setShowButtons(false);
       setTimeout(() => {
-        setMessage(`コンピューター: ${computerHand}\nあいこで...しょ！！`);
-      }, 1000);
+        setMessage('じゃんけん...');
+        setShowButtons(true);
+      }, 2000);
     }
   };
 
@@ -81,9 +91,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
       <h2>{message}</h2>
       {showButtons && (
         <div className="choice-buttons">
-          <button onClick={() => handleChoice('グー')}>グー</button>
-          <button onClick={() => handleChoice('チョキ')}>チョキ</button>
-          <button onClick={() => handleChoice('パー')}>パー</button>
+          <button onClick={() => handleChoice('グー')}>✊</button>
+          <button onClick={() => handleChoice('チョキ')}>✌️</button>
+          <button onClick={() => handleChoice('パー')}>🖐️</button>
         </div>
       )}
     </div>
