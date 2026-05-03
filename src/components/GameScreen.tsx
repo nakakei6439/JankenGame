@@ -11,8 +11,6 @@ interface GameScreenProps {
 const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
   const [message, setMessage] = useState('さいしょはグー・・・・');
   const [showButtons, setShowButtons] = useState(false);
-  const [computerChoice, setComputerChoice] = useState<Hand | null>(null);
-  const [result, setResult] = useState<Result | null>(null);
   const [streak, setStreak] = useState(0);
   const [handCounts, setHandCounts] = useState({ 'グー': 1, 'チョキ': 1, 'パー': 1 });
 
@@ -60,8 +58,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver }) => {
     const computerHand = getRandomHand();
     const gameResult = determineWinner(playerChoice, computerHand);
     
-    setComputerChoice(computerHand);
-    setResult(gameResult);
     setHandCounts(prev => ({
       ...prev,
       [computerHand]: prev[computerHand] + 1
